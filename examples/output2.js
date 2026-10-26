@@ -1,0 +1,1 @@
+const user={firstName:"Pavel",lastName:"Chubich",age:20,skills:["Python","JavaScript","SQL"]};function formatUser(u){var fullName=u.firstName+" "+u.lastName;return fullName+" ("+u.skills.length+" skills)";}

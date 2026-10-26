@@ -1,0 +1,1 @@
+function processScores(scores){var valid=scores.filter(function(score){return score >=50;});return valid.map(function(item){return item*2;});}

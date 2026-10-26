@@ -1,0 +1,1 @@
+function evaluateStatus(code,isTriggered){var resultText="pending";if(code===1 && isTriggered===1){resultText="active_triggered";}else if(code===2){resultText="completed";}return resultText;}
