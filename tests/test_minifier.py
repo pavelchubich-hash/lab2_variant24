@@ -4,13 +4,17 @@ import io
 import os
 import subprocess
 import sys
-from minifier import (
-    collapse_whitespace,
-    minify_javascript,
-    parse_output_argument,
-    remove_comments,
-    run_minifier_cli,
+
+SRC_DIR = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "src"
 )
+if SRC_DIR not in sys.path:
+    sys.path.insert(0, SRC_DIR)
+
+minifier = __import__("minifier")
+minify_javascript = minifier.minify_javascript
+parse_output_argument = minifier.parse_output_argument
+run_minifier_cli = minifier.run_minifier_cli
 
 EXIT_SUCCESS = 0
 MIN_LENGTH = 0
@@ -18,36 +22,12 @@ FIRST_EXAMPLE_ID = 1
 TOTAL_EXAMPLES_COUNT = 5
 
 
-def test_remove_comments_single_and_multi():
-    """Verify single and multi line comment stripping."""
-    raw = "// comment\nvar a = 1; /* block */ var b = 2;"
-    clean = remove_comments(raw)
-    assert "// comment" not in clean
-    assert "/* block */" not in clean
-    assert "var a = 1;" in clean
-    assert "var b = 2;" in clean
-
-
-def test_remove_comments_inside_string():
-    """Verify comment markers within strings are preserved."""
-    raw = 'var url = "http://example.com/*test*/";'
-    clean = remove_comments(raw)
-    assert clean == raw
-
-
-def test_collapse_whitespace():
-    """Verify whitespace collapsing around operators."""
-    raw = "var   x   =   10  ;   var  y = 20 ;"
-    collapsed = collapse_whitespace(raw)
-    assert "   " not in collapsed
-
-
-def test_minify_javascript_end_to_end():
-    """Verify end to end minification of code block."""
-    raw = "function test() {\n    // comment\n    return 42;\n}"
-    res = minify_javascript(raw)
-    assert "// comment" not in res
-    assert len(res) < len(raw)
+def test_minify_javascript():
+    """Verify JavaScript code minification using jsmin."""
+    source = "/* comment */\nfunction add(a, b) {\n    return a + b;\n}"
+    result = minify_javascript(source)
+    assert "/* comment */" not in result
+    assert len(result) < len(source)
 
 
 def test_parse_output_argument():
@@ -91,3 +71,7 @@ def test_demonstration_examples_via_subprocess():
         assert proc.returncode == EXIT_SUCCESS
         assert os.path.exists(out_path)
         assert os.path.getsize(out_path) > MIN_LENGTH
+
+
+if __name__ == "__main__":
+    test_demonstration_examples_via_subprocess()

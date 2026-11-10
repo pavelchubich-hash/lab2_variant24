@@ -1,1 +1,2 @@
-function calculateCircleArea(radius){if(radius <=0){return 0;}const PI=3.14159;return PI*radius*radius;}
+function calculateCircleArea(radius){if(radius<=0){return 0;}
+const PI=3.14159;return PI*radius*radius;}

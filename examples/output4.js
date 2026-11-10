@@ -1,1 +1,2 @@
-function requestData(endpoint,timeout){return new Promise(function(resolve,reject){if(!endpoint){reject("Invalid endpoint");return;}setTimeout(function(){resolve({status:200,url:endpoint});},timeout);});}
+function requestData(endpoint,timeout){return new Promise(function(resolve,reject){if(!endpoint){reject("Invalid endpoint");return;}
+setTimeout(function(){resolve({status:200,url:endpoint});},timeout);});}
