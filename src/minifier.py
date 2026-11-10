@@ -109,7 +109,8 @@ def _handle_ws_char(char: str, res: list) -> None:
 def collapse_whitespace(code: str) -> str:
     """Collapse consecutive whitespace and trim redundant spaces."""
     lines = [line.strip() for line in code.splitlines()]
-    trimmed_code = "\n".join([line for line in lines if len(line) > 0])
+    non_empty = [line for line in lines if len(line) > EMPTY_LENGTH]
+    trimmed_code = "\n".join(non_empty)
     state = {"result": [], "in_string": False, "quote": EMPTY_STRING}
     idx = MIN_VALID_INDEX
     total = len(trimmed_code)

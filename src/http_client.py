@@ -73,7 +73,9 @@ class HTTPClient:
         if base_url:
             self.base_url = base_url.rstrip("/")
         else:
-            self.base_url = f"http://{DEFAULT_HOST}:{DEFAULT_PORT}"
+            self.base_url = (
+                "http://" + DEFAULT_HOST + ":" + str(DEFAULT_PORT)
+            )
         self.app = app
         self.headers = {"Content-Type": XML_MIME, "Accept": XML_MIME}
 

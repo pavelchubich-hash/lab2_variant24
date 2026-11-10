@@ -18,6 +18,7 @@ XML_MIME = "application/xml"
 STATUS_SUCCESS = "success"
 STATUS_FAILED = "failed"
 STATUS_NONE = "none"
+MOCK_PREVIEW_LIMIT = 10
 
 
 def check_request_headers(method: str, headers: dict) -> tuple:
@@ -64,7 +65,11 @@ def enforce_headers(handler_func):
 def execute_computation(data: str, test_mode: bool) -> tuple:
     """Execute CLI minifier via subprocess or return simulated result."""
     if test_mode:
-        mock_output = data[:10] if len(data) > 10 else data
+        mock_output = (
+            data[:MOCK_PREVIEW_LIMIT]
+            if len(data) > MOCK_PREVIEW_LIMIT
+            else data
+        )
         return (mock_output, STATUS_SUCCESS, STATUS_NONE)
 
     temp_fd, temp_path = tempfile.mkstemp(suffix=".js")

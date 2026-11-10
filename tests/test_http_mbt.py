@@ -24,6 +24,7 @@ INDEX_FIRST = 0
 STATUS_OK = 200
 NON_EXISTENT_ID = 999999
 TEST_PORT = 8025
+TEST_CLIENT_ID = 99
 
 
 class ModelOracle:
@@ -256,16 +257,17 @@ def test_real_network_client():
     server_thread.start()
     time.sleep(0.3)
 
-    net_client = HTTPClient(base_url=f"http://127.0.0.1:{TEST_PORT}")
+    base_url = "http://127.0.0.1:" + str(TEST_PORT)
+    net_client = HTTPClient(base_url=base_url)
     p_resp = net_client.public_api_person_make(
-        99, "127.0.0.1", "Linux", "NetClient"
+        TEST_CLIENT_ID, "127.0.0.1", "Linux", "NetClient"
     )
-    assert int(p_resp["identifier"]) == 99
+    assert int(p_resp["identifier"]) == TEST_CLIENT_ID
 
     c_resp = net_client.public_api_command_make(
-        99, "var a = 1;", 99, "test", "done", 0
+        TEST_CLIENT_ID, "var a = 1;", TEST_CLIENT_ID, "test", "done", 0
     )
-    assert int(c_resp["identifier"]) == 99
+    assert int(c_resp["identifier"]) == TEST_CLIENT_ID
 
-    del_resp = net_client.public_api_person_remove(99)
+    del_resp = net_client.public_api_person_remove(TEST_CLIENT_ID)
     assert del_resp["success"] == "true"
