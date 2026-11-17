@@ -1,5 +1,7 @@
 """Stage 3 Model-Based Testing with PonyORM SQLite backend."""
 
+import os
+import sys
 from hypothesis import settings
 from hypothesis import strategies as st
 from hypothesis.stateful import (
@@ -9,13 +11,20 @@ from hypothesis.stateful import (
     rule,
     run_state_machine_as_test,
 )
-from http_client import HTTPClient
-from http_server import (
-    HTTP_NOT_ACCEPTABLE,
-    HTTP_UNSUPPORTED_MEDIA,
-    create_app,
+
+SRC_DIR = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "src"
 )
-import pony_storage
+if SRC_DIR not in sys.path:
+    sys.path.insert(0, SRC_DIR)
+
+http_client_mod = __import__("http_client")
+HTTPClient = http_client_mod.HTTPClient
+http_server_mod = __import__("http_server")
+HTTP_NOT_ACCEPTABLE = http_server_mod.HTTP_NOT_ACCEPTABLE
+HTTP_UNSUPPORTED_MEDIA = http_server_mod.HTTP_UNSUPPORTED_MEDIA
+create_app = http_server_mod.create_app
+pony_storage = __import__("pony_storage")
 
 MIN_COLLECTION_SIZE = 0
 INDEX_FIRST = 0
@@ -258,3 +267,7 @@ def test_pony_api_state_machine():
         PonyAPIStateMachine,
         settings=settings(max_examples=35, stateful_step_count=25),
     )
+
+
+if __name__ == "__main__":
+    test_pony_api_state_machine()

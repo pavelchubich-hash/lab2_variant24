@@ -1,5 +1,7 @@
 """Model-Based Testing for Bottle HTTP API using Hypothesis."""
 
+import os
+import sys
 import threading
 import time
 from hypothesis import settings
@@ -11,13 +13,20 @@ from hypothesis.stateful import (
     rule,
     run_state_machine_as_test,
 )
-import data_layer
-from http_client import HTTPClient
-from http_server import (
-    HTTP_NOT_ACCEPTABLE,
-    HTTP_UNSUPPORTED_MEDIA,
-    create_app,
+
+SRC_DIR = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "src"
 )
+if SRC_DIR not in sys.path:
+    sys.path.insert(0, SRC_DIR)
+
+data_layer = __import__("data_layer")
+http_client_mod = __import__("http_client")
+HTTPClient = http_client_mod.HTTPClient
+http_server_mod = __import__("http_server")
+HTTP_NOT_ACCEPTABLE = http_server_mod.HTTP_NOT_ACCEPTABLE
+HTTP_UNSUPPORTED_MEDIA = http_server_mod.HTTP_UNSUPPORTED_MEDIA
+create_app = http_server_mod.create_app
 
 MIN_COLLECTION_SIZE = 0
 INDEX_FIRST = 0
@@ -271,3 +280,7 @@ def test_real_network_client():
 
     del_resp = net_client.public_api_person_remove(TEST_CLIENT_ID)
     assert del_resp["success"] == "true"
+
+
+if __name__ == "__main__":
+    test_bottle_api_state_machine()
