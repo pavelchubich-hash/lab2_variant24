@@ -7,6 +7,7 @@ import tempfile
 from bottle import Bottle, request, response
 import data_layer
 import xml_utils
+import pony_storage
 
 HTTP_OK = 200
 HTTP_NOT_ACCEPTABLE = 406
@@ -184,6 +185,13 @@ def create_app(storage=None, test_mode: bool = False) -> Bottle:
     return app
 
 
+DEFAULT_DB_FILENAME = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+    "demo.db",
+)
+
+
 if __name__ == "__main__":
-    app_instance = create_app(test_mode=False)
+    pony_storage.init_database(DEFAULT_DB_FILENAME)
+    app_instance = create_app(storage=pony_storage, test_mode=False)
     app_instance.run(host="127.0.0.1", port=8024, debug=True)
